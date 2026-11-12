@@ -1,0 +1,52 @@
+
+name: nodejs-api
+
+image:
+  repository: ghcr.io/my-org/nodejs-api
+  tag: "v1.0.0"
+
+replicaCount: 2
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+envs:
+  - name: ENV
+    value: "DEV"
+
+  - name: NODE_ENV
+    value: "development"
+
+  - name: PORT
+    value: "3000"
+
+  - name: LOG_LEVEL
+    value: "DEBUG"
+
+  - name: TRINO_HOST
+    valueFrom:
+      secretKeyRef:
+        name: nodejs-api-trino-host
+        key: data
+
+  - name: API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: nodejs-api-token
+        key: data
+
+  - name: DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: nodejs-api-db-password
+        key: data
