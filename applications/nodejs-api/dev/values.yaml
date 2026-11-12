@@ -23,6 +23,8 @@ envs:
   value: '5001'
 - name: LOG_LEVEL
   value: DEBUG
+- name: FEATURE_NEW_DASHBOARD
+  value: "true
 - name: TRINO_HOST
   valueFrom:
     secretKeyRef:
@@ -37,4 +39,9 @@ envs:
   valueFrom:
     secretKeyRef:
       name: nodejs-api-db-password
+      key: data
+- name: PAYMENT_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: nodejs-api-payment-key
       key: data
