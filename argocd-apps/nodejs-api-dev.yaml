@@ -1,0 +1,46 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: nodejs-api-dev
+  namespace: argocd
+
+spec:
+  project: default
+
+  sources:
+    # GitHub: Helm chart
+    - repoURL: https://github.com/Narek97/argocd.git
+      targetRevision: main
+      path: charts/nodejs-app
+
+      helm:
+        releaseName: nodejs-api
+        valueFiles:
+          - $values/applications/nodejs-api/dev/values.yaml
+
+    # GitHub: values.yaml
+    - repoURL: https://github.com/Narek97/argocd.git
+      targetRevision: main
+      ref: values
+
+    # Forgejo: Kubernetes Secrets
+    - repoURL: http://192.168.49.3:3000/forgejoadmin/nodejs-app.git
+      targetRevision: main
+      path: dev
+
+      directory:
+        include: "nodejs-app.yml"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nodejs-dev
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+    syncOptions:
+      - CreateNamespace=true
